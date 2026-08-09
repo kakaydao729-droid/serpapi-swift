@@ -1,6 +1,6 @@
 # SerpApi Swift Library
 
-[![CI](https://github.com/serpapi/serpapi-swift/actions/workflows/ci.yml/badge.svg)](https://github.com/serpapi/serpapi-swift/actions/workflows/ci.yml)
+[![CI](https://img.shields.io/github/actions/workflow/status/serpapi/serpapi-swift/ci.yml?branch=main&label=CI)](https://github.com/serpapi/serpapi-swift/actions/workflows/ci.yml)
 [![SerpApi](https://img.shields.io/badge/SerpApi-Swift-blue)](https://serpapi.com)
 [![Swift](https://img.shields.io/badge/Swift-6.0-orange)](https://swift.org)
 
