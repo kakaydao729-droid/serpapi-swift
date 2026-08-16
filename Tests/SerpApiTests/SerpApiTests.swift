@@ -85,7 +85,17 @@ final class SerpApiTests: XCTestCase {
         // But for a successful google search it should be substantial
         XCTAssertGreaterThan(html.count, 100)
     }
-    
+
+    func testMarkdownSearch() async throws {
+        try XCTSkipIf(apiKey == nil, "SERPAPI_KEY not set")
+
+        let client = SerpApiClient(params: ["api_key": apiKey, "engine": "google"])
+        let markdown = try await client.markdown(params: ["q": "Coffee"])
+
+        XCTAssertFalse(markdown.isEmpty)
+        XCTAssertGreaterThan(markdown.count, 100)
+    }
+
     func testLocation() async throws {
         try XCTSkipIf(apiKey == nil, "SERPAPI_KEY not set")
         
@@ -204,6 +214,24 @@ final class SerpApiTests: XCTestCase {
         let client = SerpApiClient(params: ["api_key": "invalid_key", "engine": "google"])
         do {
             _ = try await client.html(params: ["q": "Coffee"])
+            XCTFail("Should fail with invalid key")
+        } catch let error as SerpApiError {
+            switch error {
+            case .requestFailed(let msg):
+                XCTAssertTrue(msg.contains("401"), "Should be a request failure with 401: \(msg)")
+            default:
+                XCTFail("Unexpected error type: \(error)")
+            }
+        } catch {
+             XCTFail("Unexpected error type: \(error)")
+        }
+    }
+
+    func testMarkdownError() async {
+        // Trigger an error in Markdown mode (e.g. 401 with invalid key)
+        let client = SerpApiClient(params: ["api_key": "invalid_key", "engine": "google"])
+        do {
+            _ = try await client.markdown(params: ["q": "Coffee"])
             XCTFail("Should fail with invalid key")
         } catch let error as SerpApiError {
             switch error {

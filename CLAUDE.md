@@ -59,6 +59,7 @@ Public API methods:
 |--------|----------|---------|
 | `search(params:)` | `/search?output=json` | `[String: Any]` |
 | `html(params:)` | `/search?output=html` | `String` |
+| `markdown(params:)` | `/search?output=md` | `String` |
 | `location(params:)` | `/locations.json` | `[[String: Any]]` |
 | `account(apiKey:)` | `/account` | `[String: Any]` |
 | `searchArchive(searchID:format:)` | `/searches/{id}.json\|html` | `Any` |

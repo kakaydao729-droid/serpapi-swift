@@ -117,6 +117,15 @@ let html = try await client.html(params: ["q": "Coffee"])
 print(html) // "<!doctype html>..."
 ```
 
+### Markdown Output
+
+Get the search results converted to Markdown — handy for feeding results directly into LLMs / RAG pipelines.
+
+```swift
+let markdown = try await client.markdown(params: ["q": "Coffee"])
+print(markdown)
+```
+
 ## APIs Supported
 
 ### Location API

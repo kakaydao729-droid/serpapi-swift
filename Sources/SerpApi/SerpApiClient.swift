@@ -28,12 +28,14 @@ public final class SerpApiClient: CustomStringConvertible, Sendable {
     private static let paramSource = "source"
     private static let paramApiKey = "api_key"
     private static let paramEngine = "engine"
+    private static let paramOutput = "output"
     private static let endpointSearch = "/search"
     private static let endpointLocations = "/locations.json"
     private static let endpointAccount = "/account"
     private static let endpointSearches = "/searches"
     private static let formatJson = "json"
     private static let formatHtml = "html"
+    private static let formatMarkdown = "md"
     private static let httpStatusCodeSuccess = 200
     private static let headerRetryAfter = "Retry-After"
     /// HTTP status codes that are considered transient and worth retrying.
@@ -130,13 +132,32 @@ public final class SerpApiClient: CustomStringConvertible, Sendable {
     /// - Parameter params: includes engine, api_key, search fields and more.
     /// - Returns: raw HTML search results directly from the search engine
     public func html(params: [String: String] = [:]) async throws -> String {
-        let result = try await get(endpoint: Self.endpointSearch, decoder: .html, params: params)
+        var htmlParams = params
+        htmlParams[Self.paramOutput] = Self.formatHtml
+        let result = try await get(endpoint: Self.endpointSearch, decoder: .html, params: htmlParams)
         guard let html = result as? String else {
             throw SerpApiError.jsonParseError("Expected string but got \(type(of: result))")
         }
         return html
     }
-    
+
+    /// Markdown search perform a search using SerpApi.com
+    ///
+    /// The output is the search results converted to Markdown.
+    /// It is useful for feeding search results directly into LLMs / RAG pipelines.
+    ///
+    /// - Parameter params: includes engine, api_key, search fields and more.
+    /// - Returns: Markdown search results
+    public func markdown(params: [String: String] = [:]) async throws -> String {
+        var markdownParams = params
+        markdownParams[Self.paramOutput] = Self.formatMarkdown
+        let result = try await get(endpoint: Self.endpointSearch, decoder: .html, params: markdownParams)
+        guard let markdown = result as? String else {
+            throw SerpApiError.jsonParseError("Expected string but got \(type(of: result))")
+        }
+        return markdown
+    }
+
     /// Get location using Location API
     ///
     /// Doc: https://serpapi.com/locations-api
